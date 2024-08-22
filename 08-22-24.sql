@@ -1,5 +1,5 @@
 -- Start XAMPP then START "Apache" and "MySQL"
--- #mysql -h localhost -ur root
+-- #mysql -h localhost -u root
 -- mariadb > SHOW DATABASES;
 -- mariadb > CREATE DATABASE mydb;
 -- mariadb > use mydb;
