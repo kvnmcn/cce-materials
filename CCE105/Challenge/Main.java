@@ -21,26 +21,26 @@ public class Main {
             String name = sc.nextLine();
             System.out.print("Input the number corresponding to the document you want to be printed: ");
             int choice = sc.nextInt();
-            sc.nextLine();  // Consume newline left-over
+            sc.nextLine(); 
 
             switch (choice) {
                 case 1:
-                    manager.addJob(new PrintJob(name, 1, true));
+                    manager.addJob(new PrintJob(name, 1, "urgent"));
                     break;
                 case 2:
-                    manager.addJob(new PrintJob(name, 1, true));
+                    manager.addJob(new PrintJob(name, 1, "urgent"));
                     break;
                 case 3:
-                    manager.addJob(new PrintJob(name, 1, false));
+                    manager.addJob(new PrintJob(name, 1, "nonUrgent"));
                     break;
                 case 4:
-                    manager.addJob(new PrintJob(name, 1, false));
+                    manager.addJob(new PrintJob(name, 1, "nonUrgent"));
                     break;
                 default:
                     System.out.println("Invalid input. Retry.");
-                    continue;  // Skip to next iteration of the loop
+                    continue; 
             }
-
+            System.out.println("-------------------------------------------");
             System.out.print("Do you want to add another job? (yes/no): ");
             String response = sc.nextLine().trim().toLowerCase();
             if (response.equals("no")) {
@@ -48,6 +48,7 @@ public class Main {
             }
         }
 
-        manager.processJob();
+        manager.processJobs();
+        sc.close();
     }
 }

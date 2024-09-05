@@ -1,38 +1,51 @@
 import java.util.*;
-public class PrintJobManager {
-    private Stack<PrintJob> urgentStack;
-    private Queue<PrintJob> nonUrgentQueue; 
 
-    public PrintJobManager() {
-        this.urgentStack = new Stack<>();
-        this.nonUrgentQueue = new LinkedList<>();
-    }
-    
+public class PrintJobManager {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    Queue<PrintJob> nonUrgent = new LinkedList();
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    Stack<PrintJob> urgent = new Stack();
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    LinkedList<PrintJob> jobList = new LinkedList();
+
     public void addJob(PrintJob job) {
-        if (job.isUrgent) {
-            urgentStack.push(job);
+        if (job.isUrgent()) {
+            this.urgent.push(job);
             System.out.println("Added to urgent stack: " + job);
         } else {
-            nonUrgentQueue.add(job);
+            nonUrgent.add(job);
             System.out.println("Added to non-urgent queue: " + job);
         }
-    }
-    public PrintJob processJob() {
-        if (!urgentStack.isEmpty()) {
-            PrintJob job = urgentStack.pop();
-            System.out.println("Processing from urgent stack: " + job);
-            return job;
-        } else if (!nonUrgentQueue.isEmpty()) {
-            PrintJob job = nonUrgentQueue.poll();
-            System.out.println("Processing from non-urgent queue: " + job);
-            return job;
-        } else {
-            System.out.println("Both queues are empty.");
-            return null;
-        }
+        this.jobList.add(job);
     }
 
-    public boolean hasJobs() {
-        return !urgentStack.isEmpty() || !nonUrgentQueue.isEmpty();
-    }
+    public void processJobs() {
+        PrintJob job;
+        while(!this.urgent.isEmpty()) {
+           job = (PrintJob)this.urgent.pop();
+           this.processJob(job);
+        }
+  
+        while(!this.nonUrgent.isEmpty()) {
+           job = (PrintJob)this.nonUrgent.poll();
+           this.processJob(job);
+        }
+  
+     }
+
+    private void processJob(PrintJob job) {
+        System.out.println("Processing job: " + job.getJobId());
+        job.setStatus("Processing");
+        Iterator<PrintJob> iterator = this.jobList.iterator();
+  
+        while(iterator.hasNext()) {
+           PrintJob k = (PrintJob)iterator.next();
+           if (k.getJobId() == (job.getJobId())) {
+              k.setStatus("Completed");
+              System.out.println("Completed: " + k.getJobId());
+              break;
+           }
+        }
+  
+     }
 }
