@@ -1,0 +1,59 @@
+/**
+ * Encrypts or decrypts text using a Caesar cipher.
+ * @param {string} str - The text to process.
+ * @param {number} shift - The number of positions to shift.
+ * @returns {string} The processed text.
+ */
+function caesarCipher(str, shift) {
+  // Ensure shift is within 0-25 range to simplify calculation
+  const s = ((shift % 26) + 26) % 26;
+
+  return str.split('').map(char => {
+    const code = char.charCodeAt(0);
+
+    // Handle Uppercase (A-Z: 65-90)
+    if (code >= 65 && code <= 90) {
+      return String.fromCharCode(((code - 65 + s) % 26) + 65);
+    }
+    // Handle Lowercase (a-z: 97-122)
+    else if (code >= 97 && code <= 122) {
+      return String.fromCharCode(((code - 97 + s) % 26) + 97);
+    }
+    // Return non-alphabetic characters as-is
+    return char;
+  }).join('');
+}
+
+// Example usage:
+console.log(caesarCipher("Hello, World!", 3)); // "Khoor, Zruog!"
+console.log(caesarCipher("Khoor, Zruog!", -3)); // "Hello, World!"
+
+
+
+def caesar_cipher(text, shift, mode='encrypt'):
+    result = ""
+    # Adjust shift for decryption
+    if mode == 'decrypt':
+        shift = -shift
+    
+    for char in text:
+        if char.isalpha():
+            # Determine ASCII start (uppercase 'A' or lowercase 'a')
+            start = ord('a') if char.islower() else ord('A')
+            # Shift character and wrap around using modulo 26
+            new_char = chr((ord(char) - start + shift) % 26 + start)
+            result += new_char
+        else:
+            # Keep non-alphabetical characters as they are
+            result += char
+    return result
+
+# Example Usage
+message = "Hello, World!"
+shift_key = 3
+encrypted = caesar_cipher(message, shift_key, 'encrypt')
+decrypted = caesar_cipher(encrypted, shift_key, 'decrypt')
+
+print(f"Original: {message}")
+print(f"Encrypted: {encrypted}") # Output: Khoor, Zruog!
+print(f"Decrypted: {decrypted}") # Output: Hello, World!

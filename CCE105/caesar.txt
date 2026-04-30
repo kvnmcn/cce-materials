@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Caesar Cipher Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 30px;
+    }
+    .container {
+      background: #fff;
+      padding: 20px;
+      max-width: 500px;
+      margin: auto;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input, textarea, button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    button {
+      cursor: pointer;
+    }
+    .btn-group {
+      display: flex;
+      gap: 10px;
+    }
+    .error {
+      color: red;
+      margin-top: 10px;
+    }
+    .result {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Caesar Cipher</h2>
+
+    <label>Enter text:</label>
+    <textarea id="textInput" rows="4"></textarea>
+
+    <label>Shift value (integer):</label>
+    <input type="number" id="shiftInput" placeholder="e.g. 3">
+
+    <div class="btn-group">
+      <button onclick="encryptText()">Encrypt</button>
+      <button onclick="decryptText()">Decrypt</button>
+    </div>
+
+    <div class="error" id="errorMsg"></div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function caesarCipher(str, shift) {
+      const s = ((shift % 26) + 26) % 26;
+
+      return str.split('').map(char => {
+        const code = char.charCodeAt(0);
+
+        if (code >= 65 && code <= 90) {
+          return String.fromCharCode(((code - 65 + s) % 26) + 65);
+        } else if (code >= 97 && code <= 122) {
+          return String.fromCharCode(((code - 97 + s) % 26) + 97);
+        }
+        return char;
+      }).join('');
+    }
+
+    function validateInput() {
+      const text = document.getElementById('textInput').value;
+      const shiftValue = document.getElementById('shiftInput').value;
+      const errorMsg = document.getElementById('errorMsg');
+
+      errorMsg.textContent = "";
+
+      if (!text.trim()) {
+        errorMsg.textContent = "Please enter some text.";
+        return null;
+      }
+
+      if (shiftValue === "") {
+        errorMsg.textContent = "Shift value is required.";
+        return null;
+      }
+
+      const shift = Number(shiftValue);
+
+      if (!Number.isInteger(shift)) {
+        errorMsg.textContent = "Shift must be an integer.";
+        return null;
+      }
+
+      if (Math.abs(shift) > 1000) {
+        errorMsg.textContent = "Shift is too large.";
+        return null;
+      }
+
+      return { text, shift };
+    }
+
+    function encryptText() {
+      const data = validateInput();
+      if (!data) return;
+
+      const output = caesarCipher(data.text, data.shift);
+      document.getElementById('result').textContent = "Encrypted: " + output;
+    }
+
+    function decryptText() {
+      const data = validateInput();
+      if (!data) return;
+
+      const output = caesarCipher(data.text, -data.shift);
+      document.getElementById('result').textContent = "Decrypted: " + output;
+    }
+  </script>
+</body>
+</html>

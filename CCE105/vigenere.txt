@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vigenère Cipher Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 30px;
+    }
+    .container {
+      background: #fff;
+      padding: 20px;
+      max-width: 500px;
+      margin: auto;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input, textarea, button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    .btn-group {
+      display: flex;
+      gap: 10px;
+    }
+    .error {
+      color: red;
+      margin-top: 10px;
+    }
+    .result {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Vigenère Cipher</h2>
+
+    <label>Enter text:</label>
+    <textarea id="textInput" rows="4"></textarea>
+
+    <label>Keyword (letters only):</label>
+    <input type="text" id="keyInput" placeholder="e.g. KEY">
+
+    <div class="btn-group">
+      <button onclick="encryptText()">Encrypt</button>
+      <button onclick="decryptText()">Decrypt</button>
+    </div>
+
+    <div class="error" id="errorMsg"></div>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function vigenereCipher(str, key, encrypt = true) {
+      let result = "";
+      key = key.toLowerCase();
+      let keyIndex = 0;
+
+      for (let i = 0; i < str.length; i++) {
+        const char = str[i];
+        const code = str.charCodeAt(i);
+
+        if (code >= 65 && code <= 90) { // Uppercase
+          const shift = key.charCodeAt(keyIndex % key.length) - 97;
+          const direction = encrypt ? shift : -shift;
+          result += String.fromCharCode(((code - 65 + direction + 26) % 26) + 65);
+          keyIndex++;
+        } else if (code >= 97 && code <= 122) { // Lowercase
+          const shift = key.charCodeAt(keyIndex % key.length) - 97;
+          const direction = encrypt ? shift : -shift;
+          result += String.fromCharCode(((code - 97 + direction + 26) % 26) + 97);
+          keyIndex++;
+        } else {
+          result += char;
+        }
+      }
+
+      return result;
+    }
+
+    function validateInput() {
+      const text = document.getElementById('textInput').value;
+      const key = document.getElementById('keyInput').value;
+      const errorMsg = document.getElementById('errorMsg');
+
+      errorMsg.textContent = "";
+
+      if (!text.trim()) {
+        errorMsg.textContent = "Please enter some text.";
+        return null;
+      }
+
+      if (!key.trim()) {
+        errorMsg.textContent = "Keyword is required.";
+        return null;
+      }
+
+      if (!/^[a-zA-Z]+$/.test(key)) {
+        errorMsg.textContent = "Keyword must contain letters only.";
+        return null;
+      }
+
+      if (key.length > 100) {
+        errorMsg.textContent = "Keyword is too long.";
+        return null;
+      }
+
+      return { text, key };
+    }
+
+    function encryptText() {
+      const data = validateInput();
+      if (!data) return;
+
+      const output = vigenereCipher(data.text, data.key, true);
+      document.getElementById('result').textContent = "Encrypted: " + output;
+    }
+
+    function decryptText() {
+      const data = validateInput();
+      if (!data) return;
+
+      const output = vigenereCipher(data.text, data.key, false);
+      document.getElementById('result').textContent = "Decrypted: " + output;
+    }
+  </script>
+</body>
+</html>
